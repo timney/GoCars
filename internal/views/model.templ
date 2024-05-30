@@ -1,0 +1,84 @@
+package views
+
+import (
+    md "carsdb/internal/database/model"
+	"fmt"
+	"github.com/dustin/go-humanize"
+)
+
+templ ModelPage(model md.Model, models []md.ModelResult) {
+    @Layout(model.Name) {
+        <h1>{ model.Name }</h1>
+        // <ul class="flex gap-1 flex-wrap">
+        //     for _, model := range models {
+        //         <li class="p-1 rounded hover:bg-gray-200">
+        //             <span>{ model.Name }</span>
+
+        //             <span>{ formatPrice(model.Price) }</span>
+        //         </li>
+        //     }
+        // </ul>
+        <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Spec</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Gearbox</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Mileage</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Fuel</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Engine size</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Fuel</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Year</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Source</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Price</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+                for _, model := range models {
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        if model.Images != "" {
+                            <img src={ model.Images } class="w-20 h-20" />
+                        }
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ formatDesc(model) }</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ model.Gearbox }</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ humanize.Comma(model.Mileage) }</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ model.Fuel }</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ model.EngineSize }</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ model.Fuel }</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ fmt.Sprintf("%v", model.Year) }</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ formatSource(model.JobSourceID) }</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ formatPrice(model.Price) }</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+func formatPrice(price int64) string {
+    return fmt.Sprintf("£%v", humanize.Comma(price))
+}
+
+func formatSource(source int64) string {
+    switch {
+        case source == 1:
+        return "Cazzo"
+        case source == 4:
+        return "Arnold Clark"
+        case source == 5:
+        return "Cinch"
+    }
+    return fmt.Sprintf("%v", source)
+}
+
+func formatDesc(model md.ModelResult) string {
+    if model.Spec != "" {
+        return model.Spec
+    }
+    if model.Description != "" {
+        return model.Description
+    }
+    return ""
+}

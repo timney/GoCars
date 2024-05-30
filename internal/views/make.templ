@@ -1,0 +1,18 @@
+package views
+
+import (
+    md "carsdb/internal/database/model"
+)
+
+templ MakePage(make md.Make, models []md.Model) {
+    @Layout("Make") {
+        <h1>{ make.Name }</h1>
+        <ul class="flex gap-1 flex-wrap">
+            for _, model := range models {
+                <li class="p-1 rounded hover:bg-gray-200">
+                    <a href={ templ.URL("/make/" + make.Name + "/" + model.Name ) }>{ model.Name }</a>
+                </li>
+            }
+        </ul>
+    }
+}
